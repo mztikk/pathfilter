@@ -1,0 +1,14 @@
+[package]
+name = "pathfilter"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nils Feierabend <mztikk@outlook.de>"]
+repository = "https://github.com/mztikk/pathfilter"
+license = "MIT"
+description = "library to filter paths"
+
+# [features]
+# regex = ["dep:regex"]
+
+[dependencies]
+regex = { version = "1.5.5", optional = true }
