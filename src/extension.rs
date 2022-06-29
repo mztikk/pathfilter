@@ -1,5 +1,5 @@
 use crate::PathFilter;
-use std::path::Path;
+use std::{collections::HashSet, path::Path};
 
 /// A filter that matches files based on their extension.
 pub struct ExtensionFilter {
@@ -33,6 +33,52 @@ impl ExtensionFilter {
         ExtensionFilter {
             extension: extension.trim_start_matches('.').to_string(),
         }
+    }
+}
+
+/// A filter that matches files based on their extension. Supports multiple extensions.
+pub struct ExtensionsFilter {
+    extensions: HashSet<String>,
+}
+
+impl PathFilter for ExtensionsFilter {
+    fn ignore(&self, path: &Path) -> bool {
+        path.extension()
+            .map(|ext| ext.to_string_lossy())
+            .map_or(false, |ext| self.extensions.contains(ext.as_ref()))
+    }
+}
+
+impl ExtensionsFilter {
+    /// Creates a new extensions filter for a list of extensions.
+    ///
+    /// # Examples
+    /// ```
+    /// use pathfilter::extension::ExtensionsFilter;
+    /// use pathfilter::PathFilter;
+    /// use std::path::Path;
+    ///
+    /// let filter = ExtensionsFilter::new(&vec![".rs", ".txt"]);
+    /// assert!(filter.ignore(Path::new("src/lib.rs")));
+    /// assert!(filter.ignore(Path::new("src/main.rs")));
+    /// assert!(filter.ignore(Path::new("src/main.txt")));
+    /// assert!(!filter.ignore(Path::new("src/main.png")));
+    ///
+    /// ```
+    pub fn new(extensions: &[&str]) -> Self {
+        ExtensionsFilter {
+            extensions: extensions
+                .iter()
+                .map(|ext| ext.trim_start_matches('.').to_string())
+                .collect(),
+        }
+    }
+
+    /// Adds an extension to the filter.
+    pub fn with_extension(mut self, extension: &str) -> Self {
+        self.extensions
+            .insert(extension.trim_start_matches('.').to_string());
+        self
     }
 }
 
