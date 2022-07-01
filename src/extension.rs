@@ -95,4 +95,15 @@ mod tests {
         assert!(filter.ignore(Path::new("src/main.rs")));
         assert!(!filter.ignore(Path::new("src/Program.cs")));
     }
+
+    #[test]
+    fn extensions_filter() {
+        use crate::{extension::ExtensionsFilter, PathFilter};
+
+        let filter = ExtensionsFilter::new(&[".rs", ".txt"]);
+        assert!(filter.ignore(Path::new("src/lib.rs")));
+        assert!(filter.ignore(Path::new("src/main.rs")));
+        assert!(filter.ignore(Path::new("src/main.txt")));
+        assert!(!filter.ignore(Path::new("src/main.png")));
+    }
 }
