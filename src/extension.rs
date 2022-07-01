@@ -1,16 +1,14 @@
 use crate::PathFilter;
-use std::{collections::HashSet, path::Path};
+use std::{collections::HashSet, ffi::OsString, path::Path};
 
 /// A filter that matches files based on their extension.
 pub struct ExtensionFilter {
-    extension: String,
+    extension: OsString,
 }
 
 impl PathFilter for ExtensionFilter {
     fn ignore(&self, path: &Path) -> bool {
-        path.extension()
-            .map(|ext| ext.to_string_lossy())
-            .map_or(false, |ext| ext == self.extension)
+        path.extension().map_or(false, |ext| ext == self.extension)
     }
 }
 
@@ -31,21 +29,20 @@ impl ExtensionFilter {
     /// ```
     pub fn new(extension: &str) -> Self {
         ExtensionFilter {
-            extension: extension.trim_start_matches('.').to_string(),
+            extension: extension.trim_start_matches('.').into(),
         }
     }
 }
 
 /// A filter that matches files based on their extension. Supports multiple extensions.
 pub struct ExtensionsFilter {
-    extensions: HashSet<String>,
+    extensions: HashSet<OsString>,
 }
 
 impl PathFilter for ExtensionsFilter {
     fn ignore(&self, path: &Path) -> bool {
         path.extension()
-            .map(|ext| ext.to_string_lossy())
-            .map_or(false, |ext| self.extensions.contains(ext.as_ref()))
+            .map_or(false, |ext| self.extensions.contains(ext))
     }
 }
 
@@ -69,7 +66,7 @@ impl ExtensionsFilter {
         ExtensionsFilter {
             extensions: extensions
                 .iter()
-                .map(|ext| ext.trim_start_matches('.').to_string())
+                .map(|ext| ext.trim_start_matches('.').to_string().into())
                 .collect(),
         }
     }
@@ -77,7 +74,7 @@ impl ExtensionsFilter {
     /// Adds an extension to the filter.
     pub fn with_extension(mut self, extension: &str) -> Self {
         self.extensions
-            .insert(extension.trim_start_matches('.').to_string());
+            .insert(extension.trim_start_matches('.').into());
         self
     }
 }
