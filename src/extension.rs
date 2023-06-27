@@ -5,7 +5,7 @@ use crate::PathFilter;
 use std::{collections::HashSet, ffi::OsString, path::Path};
 
 /// A filter that matches files based on their extension.
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ExtensionFilter {
     extension: OsString,
@@ -40,6 +40,8 @@ impl ExtensionFilter {
 }
 
 /// A filter that matches files based on their extension. Supports multiple extensions.
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ExtensionsFilter {
     extensions: HashSet<OsString>,
 }
