@@ -1,8 +1,14 @@
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 use crate::PathFilter;
 use std::path::Path;
 
 /// A filter that matches files based on a regex
+#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RegexFilter {
+    #[cfg_attr(feature = "serde", serde(with = "serde_regex"))]
     regex: regex::Regex,
 }
 
