@@ -5,7 +5,7 @@ use crate::PathFilter;
 use std::path::Path;
 
 /// A filter that matches files based on a regex
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RegexFilter {
     #[cfg_attr(feature = "serde", serde(with = "serde_regex"))]
