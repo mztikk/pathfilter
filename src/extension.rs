@@ -1,7 +1,12 @@
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 use crate::PathFilter;
 use std::{collections::HashSet, ffi::OsString, path::Path};
 
 /// A filter that matches files based on their extension.
+#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ExtensionFilter {
     extension: OsString,
 }
