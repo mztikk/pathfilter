@@ -8,8 +8,8 @@ license = "MIT"
 description = "library to filter paths"
 
 [features]
-regex = ["dep:regex", "dep:serde_regex"]
-serde = ["dep:serde"]
+regex = ["dep:regex"]
+serde = ["dep:serde", "dep:serde_regex"]
 
 [dependencies]
 regex = { version = "1.8.4", optional = true }

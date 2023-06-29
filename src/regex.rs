@@ -1,8 +1,7 @@
+use crate::IgnorePath;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-
-use crate::PathFilter;
-use std::path::Path;
+use std::{path::Path, str::FromStr};
 
 /// A filter that matches files based on a regex
 #[derive(Clone, Debug)]
@@ -12,12 +11,21 @@ pub struct RegexFilter {
     regex: regex::Regex,
 }
 
-impl PathFilter for RegexFilter {
+impl IgnorePath for RegexFilter {
     fn ignore(&self, path: &Path) -> bool {
         match path.to_str() {
             Some(s) => self.regex.is_match(s),
             None => false,
         }
+    }
+}
+
+impl FromStr for RegexFilter {
+    type Err = regex::Error;
+
+    /// Attempts to parse a string into a regular expression
+    fn from_str(s: &str) -> Result<Self, regex::Error> {
+        Ok(RegexFilter::new(regex::Regex::new(s)?))
     }
 }
 
@@ -27,7 +35,7 @@ impl RegexFilter {
     /// # Examples
     /// ```
     /// use pathfilter::regex::RegexFilter;
-    /// use pathfilter::PathFilter;
+    /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
     /// let filter = RegexFilter::new_str("^src/lib.rs$").unwrap();
@@ -47,7 +55,7 @@ impl RegexFilter {
     /// # Examples
     /// ```
     /// use pathfilter::regex::RegexFilter;
-    /// use pathfilter::PathFilter;
+    /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     /// use regex::Regex;
     ///
@@ -68,7 +76,7 @@ mod tests {
 
     #[test]
     fn regex_filter_str() {
-        use crate::{regex::RegexFilter, PathFilter};
+        use crate::{regex::RegexFilter, IgnorePath};
 
         let filter = RegexFilter::new_str("^(.*)\\.rs$").unwrap();
         assert!(filter.ignore(Path::new("src/lib.rs")));
@@ -78,7 +86,7 @@ mod tests {
 
     #[test]
     fn regex_filter() {
-        use crate::{regex::RegexFilter, PathFilter};
+        use crate::{regex::RegexFilter, IgnorePath};
 
         let filter = RegexFilter::new(Regex::new("^src/lib.rs$").unwrap());
         assert!(filter.ignore(Path::new("src/lib.rs")));

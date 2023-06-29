@@ -1,17 +1,16 @@
+use crate::IgnorePath;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-
-use crate::PathFilter;
 use std::{collections::HashSet, ffi::OsString, path::Path};
 
-/// A filter that matches files based on their extension.
+/// A filter that matches paths based on their extension.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ExtensionFilter {
     extension: OsString,
 }
 
-impl PathFilter for ExtensionFilter {
+impl IgnorePath for ExtensionFilter {
     fn ignore(&self, path: &Path) -> bool {
         path.extension().map_or(false, |ext| ext == self.extension)
     }
@@ -23,7 +22,7 @@ impl ExtensionFilter {
     /// # Examples
     /// ```
     /// use pathfilter::extension::ExtensionFilter;
-    /// use pathfilter::PathFilter;
+    /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
     /// let filter = ExtensionFilter::new(".rs");
@@ -32,21 +31,21 @@ impl ExtensionFilter {
     /// assert!(!filter.ignore(Path::new("src/main.txt")));
     ///
     /// ```
-    pub fn new(extension: &str) -> Self {
+    pub fn new<S: AsRef<str>>(extension: S) -> Self {
         ExtensionFilter {
-            extension: extension.trim_start_matches('.').into(),
+            extension: extension.as_ref().trim_start_matches('.').into(),
         }
     }
 }
 
-/// A filter that matches files based on their extension. Supports multiple extensions.
+/// A filter that matches paths based on their extension. Supports multiple extensions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ExtensionsFilter {
     extensions: HashSet<OsString>,
 }
 
-impl PathFilter for ExtensionsFilter {
+impl IgnorePath for ExtensionsFilter {
     fn ignore(&self, path: &Path) -> bool {
         path.extension()
             .map_or(false, |ext| self.extensions.contains(ext))
@@ -59,7 +58,7 @@ impl ExtensionsFilter {
     /// # Examples
     /// ```
     /// use pathfilter::extension::ExtensionsFilter;
-    /// use pathfilter::PathFilter;
+    /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
     /// let filter = ExtensionsFilter::new(&vec![".rs", ".txt"]);
@@ -69,11 +68,16 @@ impl ExtensionsFilter {
     /// assert!(!filter.ignore(Path::new("src/main.png")));
     ///
     /// ```
-    pub fn new(extensions: &[&str]) -> Self {
+    pub fn new<S, T>(extensions: T) -> Self
+    where
+        S: AsRef<str>,
+        T: AsRef<[S]>,
+    {
         ExtensionsFilter {
             extensions: extensions
+                .as_ref()
                 .iter()
-                .map(|ext| ext.trim_start_matches('.').to_string().into())
+                .map(|ext| ext.as_ref().trim_start_matches('.').to_string().into())
                 .collect(),
         }
     }
@@ -92,7 +96,7 @@ mod tests {
 
     #[test]
     fn extension_filter() {
-        use crate::{extension::ExtensionFilter, PathFilter};
+        use crate::{extension::ExtensionFilter, IgnorePath};
 
         let filter = ExtensionFilter::new(".rs");
         assert!(filter.ignore(Path::new("src/lib.rs")));
@@ -102,7 +106,7 @@ mod tests {
 
     #[test]
     fn extensions_filter() {
-        use crate::{extension::ExtensionsFilter, PathFilter};
+        use crate::{extension::ExtensionsFilter, IgnorePath};
 
         let filter = ExtensionsFilter::new(&[".rs", ".txt"]);
         assert!(filter.ignore(Path::new("src/lib.rs")));
