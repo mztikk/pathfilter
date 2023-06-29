@@ -9,7 +9,7 @@
 //!
 //! ```
 //! use std::path::Path;
-//! use pathfilter::extension::ExtensionFilter;
+//! use pathfilter::ExtensionFilter;
 //! use pathfilter::IgnorePath;
 //!
 //! let filter = ExtensionFilter::new(".rs");
@@ -17,19 +17,16 @@
 //!
 //! ```
 
-use std::path::Path;
+mod extension;
+#[cfg(feature = "regex")]
+mod regex;
 
 #[cfg(feature = "regex")]
-use crate::regex::RegexFilter;
-use extension::{ExtensionFilter, ExtensionsFilter};
+pub use crate::regex::RegexFilter;
+pub use extension::{ExtensionFilter, ExtensionsFilter};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-
-/// A filter that matches files based on their extension.
-pub mod extension;
-#[cfg(feature = "regex")]
-/// A filter that matches files based on a regular expression.
-pub mod regex;
+use std::path::Path;
 
 /// Provides an interface ignoring paths.
 pub trait IgnorePath {

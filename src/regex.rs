@@ -34,7 +34,7 @@ impl RegexFilter {
     /// The regex is compiled and used to match paths.
     /// # Examples
     /// ```
-    /// use pathfilter::regex::RegexFilter;
+    /// use pathfilter::RegexFilter;
     /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
@@ -54,7 +54,7 @@ impl RegexFilter {
     ///
     /// # Examples
     /// ```
-    /// use pathfilter::regex::RegexFilter;
+    /// use pathfilter::RegexFilter;
     /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     /// use regex::Regex;

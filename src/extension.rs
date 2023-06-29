@@ -21,7 +21,7 @@ impl ExtensionFilter {
     ///
     /// # Examples
     /// ```
-    /// use pathfilter::extension::ExtensionFilter;
+    /// use pathfilter::ExtensionFilter;
     /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
@@ -57,7 +57,7 @@ impl ExtensionsFilter {
     ///
     /// # Examples
     /// ```
-    /// use pathfilter::extension::ExtensionsFilter;
+    /// use pathfilter::ExtensionsFilter;
     /// use pathfilter::IgnorePath;
     /// use std::path::Path;
     ///
