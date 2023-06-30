@@ -10,12 +10,26 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  rust-build-test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build
-        run: cargo build --verbose --all-features
-      - name: Run tests
-        run: cargo test --verbose --all-features
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@cargo-hack
+        
+      - name: Build each feature
+        run: cargo hack build --verbose --each-feature
+      - name: Run tests each feature
+        run: cargo hack test --verbose --each-feature
+
+      - name: Build all features
+        run: cargo hack build --verbose --all-features
+      - name: Run tests all features
+        run: cargo hack test --verbose --all-features
+
+      - name: Build feature-powerset
+        run: cargo hack build --verbose --feature-powerset
+      - name: Run tests feature-powerset
+        run: cargo hack test --verbose --feature-powerset
