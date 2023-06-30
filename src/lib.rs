@@ -31,7 +31,7 @@ use std::path::Path;
 /// Provides an interface ignoring paths.
 pub trait IgnorePath {
     /// Returns `true` if the path should be ignored.
-    fn ignore(&self, path: &Path) -> bool;
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool;
 }
 
 #[derive(Clone, Debug)]
@@ -117,7 +117,7 @@ impl PathFilter {
 }
 
 impl IgnorePath for PathFilter {
-    fn ignore(&self, path: &Path) -> bool {
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool {
         match self {
             PathFilter::Extension(x) => x.ignore(path),
             PathFilter::Extensions(x) => x.ignore(path),
@@ -128,8 +128,8 @@ impl IgnorePath for PathFilter {
 }
 
 impl<T: AsRef<[PathFilter]>> IgnorePath for T {
-    fn ignore(&self, path: &Path) -> bool {
-        self.as_ref().iter().any(|filter| filter.ignore(path))
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool {
+        self.as_ref().iter().any(|filter| filter.ignore(&path))
     }
 }
 

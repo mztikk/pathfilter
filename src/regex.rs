@@ -12,8 +12,8 @@ pub struct RegexFilter {
 }
 
 impl IgnorePath for RegexFilter {
-    fn ignore(&self, path: &Path) -> bool {
-        match path.to_str() {
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool {
+        match path.as_ref().to_str() {
             Some(s) => self.regex.is_match(s),
             None => false,
         }

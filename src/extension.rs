@@ -4,15 +4,17 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, ffi::OsString, path::Path};
 
 /// A filter that matches paths based on their extension.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ExtensionFilter {
     extension: OsString,
 }
 
 impl IgnorePath for ExtensionFilter {
-    fn ignore(&self, path: &Path) -> bool {
-        path.extension().map_or(false, |ext| ext == self.extension)
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool {
+        path.as_ref()
+            .extension()
+            .map_or(false, |ext| ext == self.extension)
     }
 }
 
@@ -46,8 +48,9 @@ pub struct ExtensionsFilter {
 }
 
 impl IgnorePath for ExtensionsFilter {
-    fn ignore(&self, path: &Path) -> bool {
-        path.extension()
+    fn ignore<P: AsRef<Path>>(&self, path: P) -> bool {
+        path.as_ref()
+            .extension()
             .map_or(false, |ext| self.extensions.contains(ext))
     }
 }
