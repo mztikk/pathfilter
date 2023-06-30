@@ -24,8 +24,6 @@ mod regex;
 #[cfg(feature = "regex")]
 pub use crate::regex::RegexFilter;
 pub use extension::{ExtensionFilter, ExtensionsFilter};
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
 use std::path::Path;
 
 /// Provides an interface ignoring paths.
@@ -35,7 +33,7 @@ pub trait IgnorePath {
 }
 
 #[derive(Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 /// An enum that represents different types of filters for ignoring paths.
 pub enum PathFilter {
     /// Filter that matches based on their extension.
