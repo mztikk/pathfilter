@@ -18,14 +18,17 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Install cargo-hack
         uses: taiki-e/install-action@cargo-hack
+        
       - name: Build each feature
         run: cargo hack build --verbose --each-feature
       - name: Run tests each feature
         run: cargo hack test --verbose --each-feature
+
       - name: Build all features
         run: cargo hack build --verbose --all-features
       - name: Run tests all features
         run: cargo hack test --verbose --all-features
+
       - name: Build feature-powerset
         run: cargo hack build --verbose --feature-powerset
       - name: Run tests feature-powerset
