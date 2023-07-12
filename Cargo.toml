@@ -1,6 +1,6 @@
 [package]
 name = "pathfilter"
-version = "0.3.1"
+version = "0.4.1"
 edition = "2021"
 authors = ["Nils Feierabend <mztikk@outlook.de>"]
 repository = "https://github.com/mztikk/pathfilter"
@@ -8,8 +8,8 @@ license = "MIT"
 description = "library to filter paths"
 
 [features]
-regex = ["dep:regex", "dep:serde_regex"]
-serde = ["dep:serde"]
+regex = ["dep:regex"]
+serde = ["dep:serde", "dep:serde_regex"]
 
 [dependencies]
 regex = { version = "1.8.4", optional = true }
