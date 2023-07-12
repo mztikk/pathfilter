@@ -172,4 +172,22 @@ mod tests {
         assert!(filter.ignore(Path::new("src/main.txt")));
         assert!(!filter.ignore(Path::new("src/main.png")));
     }
+
+    #[cfg(feature = "regex")]
+    #[test]
+    fn regex_extension_combined_filter() {
+        use crate::IgnorePath;
+        use regex::Regex;
+
+        let filters = vec![
+            PathFilter::new_regex(Regex::new("^src/lib.rs$").unwrap()),
+            PathFilter::new_extension(".cs"),
+        ];
+        assert!(filters.ignore(Path::new("src/lib.rs")));
+        assert!(!filters.ignore(Path::new("src/main.cpp")));
+        assert!(filters.ignore(Path::new("test.cs")));
+        assert!(filters.ignore(Path::new("src/lib.rs")));
+        assert!(!filters.ignore(Path::new("src/main.rs")));
+        assert!(filters.ignore(Path::new("src/Program.cs")));
+    }
 }
